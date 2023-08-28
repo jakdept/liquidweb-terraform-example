@@ -2,6 +2,15 @@ variable "liquidweb_config_path" {
   type = string
 }
 
+terraform {
+  required_providers {
+    liquidweb = {
+      source = "local.providers/liquidweb/liquidweb"
+      version = "~> 1.5.8"
+    }
+  }
+}
+
 provider "liquidweb" {
   config_path = var.liquidweb_config_path
 }
@@ -19,7 +28,7 @@ resource "liquidweb_storm_server" "testing_servers" {
   zone      = 12
   #data.liquidweb_network_zone.api.id
   template       = "UBUNTU_1804_UNMANAGED" // ubuntu 18.04
-  domain         = "servers.${count.index}.terraform-testing.api.jakdept.dev"
+  domain         = "servers.0.${count.index}.terraform-testing.api.jakdept.dev"
   password       = "11111aA"
   public_ssh_key = file("${path.root}/devkey.pub")
 }
