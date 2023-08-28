@@ -1,0 +1,5 @@
+[lwApi]
+username = "jhayhurs"
+password = "add password"
+url = "https://api.stormondemand.com"
+timeout = 15
