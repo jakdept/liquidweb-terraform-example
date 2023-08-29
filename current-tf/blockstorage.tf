@@ -1,5 +1,5 @@
 resource "liquidweb_storage_block_volume" "testing_block_volume" {
-  domain = "block_volume.terraform-testing.api.jakdept.dev"
+  domain = "terraform-block${random_id.block.dec}.us-midwest-2.hostbaitor.com"
   size   = 10
 }
 

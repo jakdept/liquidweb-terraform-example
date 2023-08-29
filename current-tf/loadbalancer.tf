@@ -1,6 +1,6 @@
 resource "liquidweb_network_load_balancer" "testing_lb" {
-  depends_on = ["data.liquidweb_network_zone.testing_zone"]
-  name       = "lb.0.terraform-testing.api.jackdept.dev"
+  depends_on = [data.liquidweb_network_zone.testing_zone]
+  name       = "lb.0.terraform-testing.api.hostbaitor.com"
 
   region = data.liquidweb_network_zone.testing_zone.region_id
 
