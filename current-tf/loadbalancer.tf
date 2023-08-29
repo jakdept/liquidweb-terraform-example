@@ -21,27 +21,6 @@ resource "liquidweb_network_load_balancer" "testing_lb" {
   strategy = "roundrobin"
 }
 
-resource "liquidweb_storage_block_volume" "testing_block_volume" {
-  domain = "block_volume.terraform-testing.api.jakdept.dev"
-  size   = 10
-}
-
-resource "liquidweb_network_dns_record" "testing_a_record" {
-  name  = "dns.terraform-testing.api.domain.jakdept.dev"
-  type  = "A"
-  rdata = "127.0.0.1"
-  zone  = "dns.terraform-testing.api.jakdept.dev"
-}
-
-output "block_storage" {
-  value = liquidweb_storage_block_volume.testing_block_volume.domain
-}
-
-output "domain_a_name" {
-  value = liquidweb_network_dns_record.testing_a_record.name
-}
-
-
 output "lb_vip" {
   value = liquidweb_network_load_balancer.testing_lb.vip
 }
