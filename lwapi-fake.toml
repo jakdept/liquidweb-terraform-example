@@ -1,5 +1,5 @@
 [lwApi]
 username = "jhayhurs"
 password = "add password"
-url = "https://api.stormondemand.com"
+url = "https://api.liquidweb.com"
 timeout = 15
