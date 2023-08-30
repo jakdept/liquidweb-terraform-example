@@ -3,7 +3,7 @@ resource "random_id" "server" {
   count = 2
 }
 
-resource "liquidweb_storm_server" "testing_servers" {
+resource "liquidweb_cloud_server" "testing_servers" {
   count = 2
 
   #config_id = "${data.liquidweb_storm_server_config.api.id}"
@@ -13,8 +13,9 @@ resource "liquidweb_storm_server" "testing_servers" {
   template       = "UBUNTU_1804_UNMANAGED" // ubuntu 18.04
   domain         = "terraform-host${random_id.server[count.index].dec}.us-midwest-2.hostbaitor.com"
   public_ssh_key = file("${path.root}/devkey.pub")
+  password       = "1Aaaaaaaaa"
 }
 
 output "instances" {
-  value = liquidweb_storm_server.testing_servers.*.ip
+  value = liquidweb_cloud_server.testing_servers.*.ip
 }

@@ -4,7 +4,7 @@ resource "liquidweb_network_load_balancer" "testing_lb" {
 
   region = data.liquidweb_network_zone.testing_zone.region_id
 
-  nodes = liquidweb_storm_server.testing_servers[*].ip
+  nodes = liquidweb_cloud_server.testing_servers[*].ip
 
   service {
     src_port  = 80
