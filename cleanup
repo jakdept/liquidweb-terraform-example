@@ -1,0 +1,6 @@
+#!/bin/bash
+
+find . -type f -name ".terraform.lock.hcl" -ls -delete
+find . -type f -name ".terraform.tfstate" -ls -delete
+find . -type f -name ".terraform.tfstate.backup" -ls -delete
+find . -type d -name ".terraform/" -ls -exec rm -rf {} \;
