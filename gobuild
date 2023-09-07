@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Simple bash script to go install this onto your local machine
+
+destDir=$(pwd)
+
+cd ~/src/github.com/liquidweb/terraform-provider-liquidweb || return 1
+new_tag=$(git tag -l|sort -n|tail -n1|awk -F. 'BEGIN{OFS="."};{$NF+=1; print}')
+
+# shellcheck disable=SC2088
+go build -o "${destDir}/terraform.d/plugins/local.providers/liquidweb/liquidweb/${new_tag}/darwin_amd64/terraform-provider-liquidweb"
