@@ -1,6 +1,3 @@
-variable "liquidweb_config_path" {
-  type = string
-}
 
 terraform {
   required_providers {
@@ -9,8 +6,4 @@ terraform {
       version = "~> 1.5.8"
     }
   }
-}
-
-provider "liquidweb" {
-  config_path = var.liquidweb_config_path
 }
