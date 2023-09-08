@@ -2,7 +2,13 @@
 
 topdir=$(git rev-parse --show-toplevel)
 
-find ${topdir} -type f -name ".terraform.lock.hcl" -ls -delete
-find ${topdir} -type f -name "terraform.tfstate" -ls -delete
-find ${topdir} -type f -name "terraform.tfstate.backup" -ls -delete
-find ${topdir} -type d -name ".terraform" -ls -exec rm -rf {} \;
+find "${topdir}" -type f -name ".terraform.lock.hcl" -ls -delete
+find "${topdir}" -type f -name "terraform.tfstate" -ls -delete
+find "${topdir}" -type f -name "terraform.tfstate.backup" -ls -delete
+find "${topdir}" -type d -name ".terraform" -ls -exec rm -rf {} \;
+
+find "${topdir}" -type d -name "terraform.d" -print0|
+	xargs -I% find % -type f ! -name ".gitkeep" -ls -delete
+
+find "${topdir}" -type d -name "terraform.d" -print0|
+	xargs -I% find % -type d -empty -ls -delete

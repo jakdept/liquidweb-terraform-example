@@ -38,5 +38,6 @@ override.tf.json
 terraform.rc
 .terraform.lock.hcl
 .envrc
+terraform.d/*
 
 terraform-provider-liquidweb
