@@ -10,6 +10,10 @@ resource "liquidweb_cloud_server" "simple_server" {
   public_ssh_key = file("${path.root}/default.pub")
   password       = random_password.server.result
 
+  lifecycle {
+    create_before_destroy = false
+  }
+
   connection {
     type  = "ssh"
     user  = "root"

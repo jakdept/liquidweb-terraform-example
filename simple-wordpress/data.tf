@@ -23,6 +23,11 @@ resource "random_password" "wordpress_dbpass" {
   special = true
 }
 
+resource "random_password" "wordpress_salt" {
+  length = 32
+  special = true
+}
+
 data "liquidweb_network_zone" "zonec" {
   name        = "Zone C"
   region_name = "US Central"
@@ -42,6 +47,7 @@ data "template_file" "wp-config" {
     dbname = var.wordpress_dbname
     dbuser = var.wordpress_dbuser
     dbpass = random_password.wordpress_dbpass.result
+    salt = random_password.wordpress_salt.result
   }
 }
 
