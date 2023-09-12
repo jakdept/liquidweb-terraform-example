@@ -30,11 +30,7 @@ resource "liquidweb_cloud_server" "simple_server" {
     destination = "/etc/nginx/conf.d/site.conf"
   }
   provisioner "file" {
-    content     = data.template_file.wp-config.rendered
-    destination = "/var/www/html/site/wp-config.php"
-  }
-  provisioner "file" {
-    content     = data.template_file.wp-config.rendered
+    content     = data.template_file.php-conf.rendered
     destination = "/etc/opt/remi/php82/php-fpm.d/site.conf"
   }
   provisioner "file" {
@@ -45,13 +41,17 @@ resource "liquidweb_cloud_server" "simple_server" {
     content     = data.template_file.install-wordpress.rendered
     destination = "/root/install-wordpress.sh"
   }
+  provisioner "file" {
+    content     = data.template_file.wp-config.rendered
+    destination = "/root/wp-config.php"
+  }
 
   provisioner "remote-exec" {
     inline = [
       "systemctl start mysqld.service",
+      "chmod +x /root/install-wordpress.sh",
       "/root/install-wordpress.sh",
       "mysql < /root/create-database.sql",
-      "rm -f /root/create-database.sql /root/install-wordpress.sh",
       "systemctl enable nginx.service php82-php-fpm.service mysqld.service",
       "systemctl start nginx.service php82-php-fpm.service mysqld.service",
       "firewall-cmd --zone public --permanent --add-port 80/tcp",

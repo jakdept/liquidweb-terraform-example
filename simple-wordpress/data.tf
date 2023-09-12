@@ -46,9 +46,17 @@ data "template_file" "wp-config" {
 }
 
 data "template_file" "site-conf" {
-  template = file("${path.module}/templates/wordpress-nginx.conf")
+  template = file("${path.module}/templates/nginx.conf")
   vars = {
     domain = var.site_name
+    user = var.username
+  }
+}
+
+data "template_file" "php-conf" {
+  template = file("${path.module}/templates/php-fpm.conf")
+  vars = {
+    user = var.username
   }
 }
 
