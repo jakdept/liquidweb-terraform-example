@@ -9,6 +9,11 @@ variable "top_domain" {
   default = "hostbaitor.com"
 }
 
+variable "username" {
+  type = string
+  default = "wordpress"
+}
+
 variable "wordpress_dbname" {
   type = string
   default = "wordpress"

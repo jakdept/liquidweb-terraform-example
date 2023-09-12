@@ -28,29 +28,36 @@ data "liquidweb_network_zone" "zonec" {
   region_name = "US Central"
 }
 
+data "template_file" "install-wordpress" {
+  template = file("${path.module}/templates/install-wordpress.sh")
+  vars = {
+    user = var.username
+  }
+}
+
 data "template_file" "wp-config" {
   template = file("${path.module}/templates/wp-config.php")
-  vyamlars = {
+  vars = {
     dbhost = var.wordpress_dbhost
     dbname = var.wordpress_dbname
     dbuser = var.wordpress_dbuser
     dbpass = random_password.wordpress_dbpass.result
+  }
+}
+
+data "template_file" "site-conf" {
+  template = file("${path.module}/templates/wordpress-nginx.conf")
+  vars = {
+    domain = var.site_name
   }
 }
 
 data "template_file" "create-database" {
   template = file("${path.module}/templates/create-database.sql")
-  vyamlars = {
+  vars = {
     dbhost = var.wordpress_dbhost
     dbname = var.wordpress_dbname
     dbuser = var.wordpress_dbuser
     dbpass = random_password.wordpress_dbpass.result
-  }
-}
-
-data "template_file" "init-script" {
-  template = file("${path.module}/templates/site.conf")
-  vyamlars = {
-    domain = var.site_name
   }
 }

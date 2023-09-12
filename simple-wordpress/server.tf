@@ -10,16 +10,54 @@ resource "liquidweb_cloud_server" "simple_server" {
   public_ssh_key = file("${path.root}/default.pub")
   password       = random_password.server.result
 
+  connection {
+    type  = "ssh"
+    user  = "root"
+    agent = true
+    host  = self.ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "yum install -y epel-release",
+      "yum install -y http://rpms.remirepo.net/enterprise/remi-release-8.rpm",
+      "yum install -y wget curl nginx mysql mysql-common mysql-server php82-php-fpm php82-php-mysqlnd php82-php-mbstring"
+    ]
+  }
+
   provisioner "file" {
-    source      = "templates/site.conf"
+    content     = data.template_file.site-conf.rendered
     destination = "/etc/nginx/conf.d/site.conf"
   }
   provisioner "file" {
-    source      = template_file.wp-config.rendered
+    content     = data.template_file.wp-config.rendered
     destination = "/var/www/html/site/wp-config.php"
   }
-  provisioner "remote-exec" {
+  provisioner "file" {
+    content     = data.template_file.wp-config.rendered
+    destination = "/etc/opt/remi/php82/php-fpm.d/site.conf"
+  }
+  provisioner "file" {
+    content     = data.template_file.create-database.rendered
+    destination = "/root/create-database.sql"
+  }
+  provisioner "file" {
+    content     = data.template_file.install-wordpress.rendered
+    destination = "/root/install-wordpress.sh"
+  }
 
+  provisioner "remote-exec" {
+    inline = [
+      "systemctl start mysqld.service",
+      "/root/install-wordpress.sh",
+      "mysql < /root/create-database.sql",
+      "rm -f /root/create-database.sql /root/install-wordpress.sh",
+      "systemctl enable nginx.service php82-php-fpm.service mysqld.service",
+      "systemctl start nginx.service php82-php-fpm.service mysqld.service",
+      "firewall-cmd --zone public --permanent --add-port 80/tcp",
+      "firewall-cmd --zone public --permanent --add-port 443/tcp",
+      "firewall-cmd --reload"
+    ]
   }
 }
 
