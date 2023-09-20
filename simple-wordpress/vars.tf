@@ -1,4 +1,8 @@
 
+# recommended changing with file `./terraform.tfvars` with content
+# top_domain = "example.com"
+# site_domain = "wordpress.example.com"
+
 variable "site_name" {
   type = string
   default = "simple.hostbaitor.com"

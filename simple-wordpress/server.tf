@@ -30,6 +30,15 @@ resource "liquidweb_cloud_server" "simple_server" {
   }
 
   provisioner "file" {
+    content     = "${acme_certificate.web_cert.certificate_pem}${acme_certificate.web_cert.issuer_pem}"
+    destination = "/etc/pki/tls/certs/${var.site_name}.crt"
+  }
+  provisioner "file" {
+    content     = "${acme_certificate.web_cert.private_key_pem}"
+    destination = "/etc/pki/tls/private/${var.site_name}.key"
+  }
+
+  provisioner "file" {
     content     = data.template_file.site-conf.rendered
     destination = "/etc/nginx/conf.d/site.conf"
   }
@@ -63,28 +72,6 @@ resource "liquidweb_cloud_server" "simple_server" {
       "firewall-cmd --reload"
     ]
   }
-}
-
-resource "liquidweb_network_dns_record" "server_dns" {
-  name  = liquidweb_cloud_server.simple_server.domain
-  type  = "A"
-  rdata = liquidweb_cloud_server.simple_server.ip
-  zone  = var.top_domain
-}
-
-resource "liquidweb_network_dns_record" "wordpress_record" {
-  name  = var.site_name
-  type  = "A"
-  rdata = liquidweb_cloud_server.simple_server.ip
-  zone  = var.top_domain
-}
-
-output "server_hostname" {
-  value = liquidweb_network_dns_record.server_dns.name
-}
-
-output "domain_a_name" {
-  value = liquidweb_network_dns_record.wordpress_record.name
 }
 
 output "instances" {
