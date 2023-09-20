@@ -4,19 +4,33 @@ The files in this directoy provide a simple wordpress terraform deployment.
 This deployment is not intended for production - there are no backups, there's a few quirks, but it could be used as-is and makes a good starting point.
 This page attempts to explain how the parts fit together.
 
-## Pre-requisites
+<!-- vscode-markdown-toc -->
+* [Pre-Requisites](#pre-requisites)
+* [Files in deployment](#files-in-deployment)
+  * [`vars.tf`](#varstf)
+  * [`data.tf`](#datatf)
+  * [`ssl.tf`](#ssltf)
+  * [`server.tf`](#servertf)
 
-- You must already have a Liquid Web account.
-- Your Liquid Web account or API user must be set to environment variables:
-  - `LWAPI_USERNAME` - your account username
-  - `LWAPI_PASSWORD` - your account username
-- For the ACME TLS provider, your account must be set to
-  - `LIQUID_WEB_USERNAME` - your account username (for ACME)
-  - `LIQUID_WEB_PASSWORD` - your account username (for ACME)
-  - `LIQUID_WEB_URL` set to `"https://api.liquidweb.com"`
-  - `LIQUID_WEB_ZONE` set to your domain name
-- You must have a DNS zone created for the domain you want to use
-- You should create a `.tfvars` to change the domain - see below
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+## Pre-Requisites
+
+* You must already have a Liquid Web account.
+* Your Liquid Web account or API user must be set to environment variables:
+  * `LWAPI_USERNAME` - your account username
+  * `LWAPI_PASSWORD` - your account username
+* For the ACME TLS provider, your account must be set to
+  * `LIQUID_WEB_USERNAME` - your account username (for ACME)
+  * `LIQUID_WEB_PASSWORD` - your account username (for ACME)
+  * `LIQUID_WEB_URL` set to `"https://api.liquidweb.com"`
+  * `LIQUID_WEB_ZONE` set to your domain name
+* You must have a DNS zone created for the domain you want to use
+* You should create a `.tfvars` to change the domain - see below
 
 Once you have those prerequisites, deploy from this directory with:
 
@@ -63,10 +77,10 @@ variable "top_domain" {
 }
 ```
 
-- If you copy these files somewhere else, you can modify those values
-- You can change them at cli `terraform apply -var "top_domain=example.com"`
-- Environment variables - `export TF_VAR_TOP_DOMAIN="example.com"`
-- We'd recommend using a [tfvars file](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files)
+* If you copy these files somewhere else, you can modify those values
+* You can change them at cli `terraform apply -var "top_domain=example.com"`
+* Environment variables - `export TF_VAR_TOP_DOMAIN="example.com"`
+* We'd recommend using a [tfvars file](https://developer.hashicorp.com/terraform/language/values/variables#variable-definitions-tfvars-files)
 
 ```hcl
 top_domain = "example.com"
@@ -107,8 +121,8 @@ resource "random_password" "server" {
 Finally, templates are rendered.
 Templates can be rendered inline, but here they are made into objects so terraform will detect changes.
 
-- `template` is a path to the location of the template (relative to the cwd)
-- `vars` is a hash of variables available to be used in the template
+* `template` is a path to the location of the template (relative to the cwd)
+* `vars` is a hash of variables available to be used in the template
 
 ```hcl
 data "template_file" "wp-config" {
@@ -127,9 +141,9 @@ Finally, there are a few DNS records created for both the site and the server.
 These are dependent on the server being created, and happen after that.
 But `terraform` automatically creates the DNS records for ease of use.
 
-- `name` is where the DNS record is created
-- `rdata` is what the DNS record should point to
-- `zone` is the zone to create the DNS record in
+* `name` is where the DNS record is created
+* `rdata` is what the DNS record should point to
+* `zone` is the zone to create the DNS record in
 
 All of these are string fields, and can be changed to be whatever else is needed.
 
@@ -149,12 +163,12 @@ With this method of SSL generation, you will need to run `terraform apply` to re
 
 Relevant links for this section:
 
-- [`acme_certificate` provider](https://registry.terraform.io/providers/vancluever/acme/latest/docs/resources/certificate#using-dns-challenges)
-- [`liquidweb` challenge for use with zones hosted with LiquidWeb](https://registry.terraform.io/providers/vancluever/acme/latest/docs/guides/dns-providers-liquidweb)
-- [source for the `terraform` provider (uses `lego`)](https://github.com/vancluever/terraform-provider-acme/tree/main/acme)
-- [docs for `liquidweb` part within `lego`](https://go-acme.github.io/lego/dns/liquidweb/)
-- [source for the `liquidweb` DNS challenge within `lego`](https://github.com/go-acme/lego/tree/master/providers/dns/liquidweb)
-- [Let's Encrypt Endpoints](https://letsencrypt.org/docs/acme-protocol-updates/#api-endpoints)
+* [`acme_certificate` provider](https://registry.terraform.io/providers/vancluever/acme/latest/docs/resources/certificate#using-dns-challenges)
+* [`liquidweb` challenge for use with zones hosted with LiquidWeb](https://registry.terraform.io/providers/vancluever/acme/latest/docs/guides/dns-providers-liquidweb)
+* [source for the `terraform` provider (uses `lego`)](https://github.com/vancluever/terraform-provider-acme/tree/main/acme)
+* [docs for `liquidweb` part within `lego`](https://go-acme.github.io/lego/dns/liquidweb/)
+* [source for the `liquidweb` DNS challenge within `lego`](https://github.com/go-acme/lego/tree/master/providers/dns/liquidweb)
+* [Let's Encrypt Endpoints](https://letsencrypt.org/docs/acme-protocol-updates/#api-endpoints)
 
 First, the Let's Encrypt URL is configured.
 
@@ -200,13 +214,13 @@ This resource depends on random values, templates, the TLS cert, and an SSH key.
 
 First, the server options are specified - this determines how the server is created.
 
-- `zone` (required) determines which zone to create the server in
-- `config_id` (required) is the numeric id of the server type to create
-- `template` (required) is the base image to use
-- `domain` (required) is the server's hostname
-- `password` (optional) will be the server's root passwordot provided
-- `public_ssh_key` (optional) an SSH key inserted for root
-- `lifecycle.create_before_desetroy` determines what to do when recreating a server`
+* `zone` (required) determines which zone to create the server in
+* `config_id` (required) is the numeric id of the server type to create
+* `template` (required) is the base image to use
+* `domain` (required) is the server's hostname
+* `password` (optional) will be the server's root passwordot provided
+* `public_ssh_key` (optional) an SSH key inserted for root
+* `lifecycle.create_before_desetroy` determines what to do when recreating a server`
 
 You need either `public_ssh_key` or `password`, but not both.
 If no `password` is provide, a random one will be set.
