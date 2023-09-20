@@ -51,8 +51,9 @@ This example is made up of 4 files in an attempt to simplify the example.
 Technically, this could be in one `.tf` file instead.
 Below, the content in each file is explained.
 
-Before giong into that, `output` sections in each file simply show things at the end.
+`output` sections in each file simply show things at the end.
 They do not impact the deployment, just the output you see.
+Relevant useful pieces are shown from each item.
 
 ```hcl
 output "instances" {
