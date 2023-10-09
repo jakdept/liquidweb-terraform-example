@@ -56,7 +56,36 @@ There are also other IaC tools that can be used with Terraform.
 The idomatic approach to IaC typically involves multiple tools used in combination.
 However for the purposes of these examples, the focus is on terraform.
 
-### Examples
+### Installing and Examples
+
+The [Hashicorp official instructions for installing terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) are well written.
+You are likely best off going there.
+Do note, you will likely have a better time if you use the package install for your OS.
+In other words, on macOS use `homebrew`, on Windows use `choco`, on Linux use your package manager.
+
+The LiquidWeb provider does not require special installation.
+If it is used in your configs, it should be automatically installed with `terraform init`.
+
+[Documentation for that provider is published on the provider page](https://registry.terraform.io/providers/liquidweb/liquidweb/latest/docs).
+
+You will need to provide credentials to a LiquidWeb account in order to use the LiquidWeb provider.
+These credentials should be in the following environment variables:
+
+```env
+LWAPI_USERNAME="username"
+LWAPI_PASSWORD="password"
+```
+
+There is also an `acme` SSL provider.
+If your domain is hosted with LiquidWeb, you can use this to get an SSL.
+[The documentation gives a basic example](https://registry.terraform.io/providers/vancluever/acme/latest/docs/guides/dns-providers-liquidweb).
+If you wish to get an SSL with the `acme` provider with a DNS server, you must provide the following credentials:
+
+```env
+LIQUID_WEB_USERNAME="username"
+LIQUID_WEB_PASSWORD="password"
+LIQUID_WEB_ZONE="zone" # the DNS zone where the ACME challenge record must be created
+```
 
 For examples, please look at:
 
