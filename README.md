@@ -91,6 +91,7 @@ For examples, please look at:
 
 - [Basic server example](https://github.com/jakdept/liquidweb-terraform-example/tree/main/basic-example)
 - [Basic wordpress example](https://github.com/jakdept/liquidweb-terraform-example/tree/main/simple-wordpress)
+- [Wordpress Cluster example](https://github.com/jakdept/liquidweb-terraform-example/tree/main/scalable-wordpress)
 
 Eventually, these will be moving into [the repository for the provider](https://github.com/liquidweb/terraform-provider-liquidweb/tree/master/examples)
 and will be automatically published to other locations.
