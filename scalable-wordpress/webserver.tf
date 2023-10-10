@@ -29,14 +29,14 @@ resource "liquidweb_cloud_server" "webserver" {
     ]
   }
 
-  # provisioner "file" {
-  #   content     = "${acme_certificate.web_cert.certificate_pem}${acme_certificate.web_cert.issuer_pem}"
-  #   destination = "/etc/pki/tls/certs/${var.site_name}.crt"
-  # }
-  # provisioner "file" {
-  #   content     = "${acme_certificate.web_cert.private_key_pem}"
-  #   destination = "/etc/pki/tls/private/${var.site_name}.key"
-  # }
+  provisioner "file" {
+    content     = "${acme_certificate.web_cert.certificate_pem}${acme_certificate.web_cert.issuer_pem}"
+    destination = "/etc/pki/tls/certs/${var.site_name}.crt"
+  }
+  provisioner "file" {
+    content     = "${acme_certificate.web_cert.private_key_pem}"
+    destination = "/etc/pki/tls/private/${var.site_name}.key"
+  }
 
   provisioner "file" {
     content     = data.template_file.site-conf.rendered

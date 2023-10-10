@@ -77,16 +77,16 @@ resource "liquidweb_network_dns_record" "webserver_dns" {
   zone  = var.top_domain
 }
 
-# resource "liquidweb_network_dns_record" "wordpress_record" {
-#   name  = var.site_name
-#   type  = "A"
-#   rdata = liquidweb_cloud_server.webserver.ip
-#   zone  = var.top_domain
-# }
+resource "liquidweb_network_dns_record" "wordpress_record" {
+  name  = var.site_name
+  type  = "A"
+  rdata = liquidweb_network_load_balancer.loadbalancer.vip
+  zone  = var.top_domain
+}
 
-# output "domain_a_name" {
-#   value = liquidweb_network_dns_record.wordpress_record.name
-# }
+output "domain_a_name" {
+  value = liquidweb_network_dns_record.wordpress_record.name
+}
 
 # output "database_create_script" {
 #   value = data.template_file.create-database.rendered
