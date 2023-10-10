@@ -1,8 +1,8 @@
 resource "liquidweb_network_load_balancer" "loadbalancer" {
-  depends_on = [data.liquidweb_network_zone.testing_zone]
-  name       = "lb.0.terraform-testing.api.hostbaitor.com"
+  # depends_on = [data.liquidweb_network_zone.testing_zone]
+  name       = "wordpress-loadbalancer1-p${random_id.server.dec}${var.top_domain}"
 
-  region = data.liquidweb_network_zone.testing_zone.region_id
+  region = data.liquidweb_network_zone.zonec.region_id
 
   nodes = liquidweb_cloud_server.webserver[*].ip
 

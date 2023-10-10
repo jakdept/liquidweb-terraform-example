@@ -69,7 +69,7 @@ resource "liquidweb_cloud_server" "webserver" {
 }
 
 output "webserver_hostnames" {
-  value = liquidweb_cloud_server.webserver.*.ip
+  value = liquidweb_cloud_server.webserver.*.domain
 }
 
 output "webserver_ips" {

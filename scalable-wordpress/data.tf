@@ -87,7 +87,3 @@ resource "liquidweb_network_dns_record" "wordpress_record" {
 output "domain_a_name" {
   value = liquidweb_network_dns_record.wordpress_record.name
 }
-
-# output "database_create_script" {
-#   value = data.template_file.create-database.rendered
-# }
