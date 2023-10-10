@@ -47,8 +47,9 @@ terraform destroy
 
 ## Files in deployment
 
-This example is made up of 4 files in an attempt to simplify the example.
+This example is made up of 6 files in an attempt to simplify the example.
 Technically, this could be in one `.tf` file instead.
+The files are mostly similar to the `simple-wordpress` example.
 Below, the content in each file is explained.
 
 `output` sections in each file simply show things at the end.
@@ -208,9 +209,28 @@ resource "acme_certificate" "web_cert" {
 
 This produces a `acme_certificate.web_cert` resource for use later.
 
-### `server.tf`
+### `dbserver.tf`
 
-The file `server.tf` contains one resource, but it's the most complex one - the server.
+This is the simplest server of the bunch.
+This wordpress cluster is backed by a single database server.
+
+Since this is the first server in this example, the following fields are given.
+
+* `zone` (required) determines which zone to create the server in
+* `config_id` (required) is the numeric id of the server type to create
+* `template` (required) is the base image to use
+* `domain` (required) is the server's hostname
+* `password` (optional) will be the server's root passwordot provided
+* `public_ssh_key` (optional) an SSH key for root
+* `lifecycle.create_before_desetroy` determines what to do when recreating a server`
+
+The config for this server does not do much, it mostly just installs MySQL.
+After the cluster is bootstrapped, you need to go back and create the database.
+You also need to allow access from the webservers.
+
+### `webserver.tf`
+
+The file `webserver.tf` contains the webservers.
 This resource depends on random values, templates, the TLS cert, and an SSH key.
 
 First, the server options are specified - this determines how the server is created.
@@ -259,7 +279,7 @@ Once the server is online and the connection is good, some commands are run:
     inline = [
       "yum install -y epel-release",
       "yum install -y http://rpms.remirepo.net/enterprise/remi-release-8.rpm",
-      "yum install -y wget curl nginx mysql mysql-common mysql-server php82-php-fpm php82-php-mysqlnd php82-php-mbstring"
+      "yum install -y wget curl nginx mysql mysql-common php82-php-fpm php82-php-mysqlnd php82-php-mbstring"
     ]
   }
 ```
@@ -275,3 +295,37 @@ But see the [`file provisioner`](https://developer.hashicorp.com/terraform/langu
 ```
 
 Once all of those are done, the server's up and ready to go through the Wordpress setup.
+
+### `loadbalancer.tf`
+
+File simply sets up a loadbalancer service to sit in front of the webservers.
+The resource for this one is rather simple.
+
+* `name` specifies the name for the service - what it shows up as in your account.
+* `nodes` determines the IP addresses that it routes to
+* `service` blocks, one per each mapping, denotes external IPs ot internal addresses
+* `strategy` is the balancing stragety, you probalby want `roundrobin`
+
+That resource then provides a `vip` asset, a DNS record for the site's domain is then created pointing to that `vip`.
+
+## Manual Bits & Caveats
+
+If you bootstrap this example, the database will not be set up.
+In order to get this working, you need to SSH into one of the webserver nodes, and cat `/home/wordpress/www/wp-config.php`.
+Then, with the username and password and database name from that file, you need to SSH to the database server.
+You'll need to enter MySQL and run the following query to create the database, then the subsequent query for each webserver to set up access.
+
+```sql
+CREATE DATABASE ${dbname} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE USER '${dbuser}'@'${webserver}' IDENTIFIED BY '${dbpass}';
+GRANT ALL PRIVILEGES ON ${dbname}.* TO '${dbuser}'@'${webserver}';
+```
+
+The last 2 lines have to be repeated for every webserver.
+And the password, username, and database name can be found in `wp-config.php`.
+
+This does not include any file replication for the `wp-content` directory.
+This is actually not so much about setting up a wordpress install, as it is showing how to set up any install.
+
+For a production install, it's also recommended to further harden the firewall.
+Redirecting traffic for `wp-admin` and syncing `wp-content` across nodes is also typical for a wordpress install (not implemented here).
