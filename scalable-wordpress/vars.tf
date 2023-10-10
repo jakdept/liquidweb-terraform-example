@@ -27,8 +27,3 @@ variable "wordpress_dbuser" {
   type = string
   default = "wordpress"
 }
-
-variable "wordpress_dbhost" {
-  type = string
-  default = "localhost"
-}

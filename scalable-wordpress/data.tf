@@ -46,11 +46,11 @@ data "template_file" "install-wordpress" {
 data "template_file" "wp-config" {
   template = file("${path.module}/templates/wp-config.php")
   vars = {
-    dbhost = var.wordpress_dbhost
     dbname = var.wordpress_dbname
     dbuser = var.wordpress_dbuser
     dbpass = random_password.wordpress_dbpass.result
     salt = random_password.wordpress_salt.result
+    dbhost = liquidweb_cloud_server.dbserver.ip
   }
 }
 
@@ -69,34 +69,25 @@ data "template_file" "php-conf" {
   }
 }
 
-data "template_file" "create-database" {
-  template = file("${path.module}/templates/create-database.sql")
-  vars = {
-    dbhost = var.wordpress_dbhost
-    dbname = var.wordpress_dbname
-    dbuser = var.wordpress_dbuser
-    dbpass = random_password.wordpress_dbpass.result
-  }
-}
-
-resource "liquidweb_network_dns_record" "server_dns" {
-  name  = liquidweb_cloud_server.simple_server.domain
+resource "liquidweb_network_dns_record" "webserver_dns" {
+  count = 3
+  name  = liquidweb_cloud_server.webserver[count.index].domain
   type  = "A"
-  rdata = liquidweb_cloud_server.simple_server.ip
+  rdata = liquidweb_cloud_server.webserver[count.index].ip
   zone  = var.top_domain
 }
 
-resource "liquidweb_network_dns_record" "wordpress_record" {
-  name  = var.site_name
-  type  = "A"
-  rdata = liquidweb_cloud_server.simple_server.ip
-  zone  = var.top_domain
-}
+# resource "liquidweb_network_dns_record" "wordpress_record" {
+#   name  = var.site_name
+#   type  = "A"
+#   rdata = liquidweb_cloud_server.webserver.ip
+#   zone  = var.top_domain
+# }
 
-output "domain_a_name" {
-  value = liquidweb_network_dns_record.wordpress_record.name
-}
+# output "domain_a_name" {
+#   value = liquidweb_network_dns_record.wordpress_record.name
+# }
 
-output "server_hostname" {
-  value = liquidweb_network_dns_record.server_dns.name
-}
+# output "database_create_script" {
+#   value = data.template_file.create-database.rendered
+# }

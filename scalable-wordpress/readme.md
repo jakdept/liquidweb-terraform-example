@@ -57,7 +57,7 @@ Relevant useful pieces are shown from each item.
 
 ```hcl
 output "instances" {
-  value = liquidweb_cloud_server.simple_server.*.ip
+  value = liquidweb_cloud_server.webserver.*.ip
 }
 ```
 
@@ -150,9 +150,9 @@ All of these are string fields, and can be changed to be whatever else is needed
 
 ```hcl
 resource "liquidweb_network_dns_record" "server_dns" {
-  name  = liquidweb_cloud_server.simple_server.domain
+  name  = liquidweb_cloud_server.webserver.domain
   type  = "A"
-  rdata = liquidweb_cloud_server.simple_server.ip
+  rdata = liquidweb_cloud_server.webserver.ip
   zone  = var.top_domain
 }
 ```
