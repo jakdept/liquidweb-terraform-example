@@ -6,7 +6,7 @@ resource "liquidweb_cloud_server" "db_server" {
   zone      = data.liquidweb_network_zone.zonec.network_zone_id
   #data.liquidweb_network_zone.api.id
   template       = "ROCKYLINUX_8_UNMANAGED"
-  domain         = "cluster-db${count.index}-p${random_id.server.dec}.us-midwest-2.${var.top_domain}"
+  domain         = "wpcluster-db${count.index}-p${random_id.server.dec}.us-midwest-2.${var.top_domain}"
   public_ssh_key = file("${path.root}/default.pub")
   password       = random_password.server.result
 
@@ -27,7 +27,7 @@ resource "liquidweb_cloud_server" "db_server" {
       "yum install -y http://rpms.remirepo.net/enterprise/remi-release-8.rpm",
       "yum install -y wget curl mysql",
       "curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh",
-      "source /root/.bashrc",
+      "source /root/.bash_profile",
       "tiup cluster"
     ]
   }

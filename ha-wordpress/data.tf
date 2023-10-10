@@ -32,6 +32,13 @@ data "liquidweb_network_zone" "zonec" {
   region_name = "US Central"
 }
 
+# data "template_file" "tiup_config" {
+#   template = file("${path.module}/templates/tiup.yaml.tmpl")
+#   vars = {
+#     servers = liquidweb_cloud_server.db_server
+#   }
+# }
+
 resource "liquidweb_network_dns_record" "db_server" {
   count = 3
 
